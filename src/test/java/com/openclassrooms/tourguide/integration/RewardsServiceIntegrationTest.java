@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import gpsUtil.GpsUtil;
@@ -20,10 +19,10 @@ import com.openclassrooms.tourguide.models.UserReward;
 import com.openclassrooms.tourguide.services.RewardsService;
 import com.openclassrooms.tourguide.services.TourGuideService;
 
-public class RewardsServiceIntegrationTest {
+class RewardsServiceIntegrationTest {
 
 	@Test
-	public void userGetRewards() {
+	void userGetRewards() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
@@ -36,20 +35,19 @@ public class RewardsServiceIntegrationTest {
 		tourGuideService.trackUserLocation(user);
 		List<UserReward> userRewards = user.getUserRewards();
 		tourGuideService.tracker.stopTracking();
-		assertTrue(userRewards.size() == 1);
+		assertEquals(1, userRewards.size());
 	}
 
 	@Test
-	public void isWithinAttractionProximity() {
+	void isWithinAttractionProximity() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
 
-	@Disabled // Needs fixed - can throw ConcurrentModificationException
 	@Test
-	public void nearAllAttractions() {
+	void nearAllAttractions() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
