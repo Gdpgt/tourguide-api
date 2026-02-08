@@ -17,6 +17,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
@@ -93,6 +96,19 @@ public class TourGuideService {
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
+	}
+
+
+	public void trackAllUserLocations(List<User> users) {
+		ExecutorService executor = Executors.newFixedThreadPool(250);
+
+		List<CompletableFuture<Void>> futures = users.stream()
+			 										 .map(u -> CompletableFuture.runAsync(() -> trackUserLocation(u), executor))
+													 .toList();
+
+		CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+		executor.shutdown();
 	}
 
 
